@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Погода в Києві</title>
+
+    <style>
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #weather-container {
+            font-family: 'Segoe UI';
+            width: 100%;
+            height: 100%;
+            white-space: nowrap;
+            text-align: center;
+            align-items: center;
+            align-content: center;
+            justify-content: center;
+            overflow: auto;
+            display: flex;
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #table {
+            display: flex;
+            flex-direction: column;
+            white-space: normal;
+            vertical-align: middle;
+            text-align: left;
+            height: 150px;
+            cursor: default;
+        }
+
+        #weather-main {
+            display: grid;
+            grid-template-columns: 80px 1fr 50px;
+            border: 1px solid #b9b9b9;
+            border-radius: 4px;
+        }
+
+        #weather-main>div {
+            padding: 5px;
+        }
+
+        span,
+        h1 {
+            display: inline-block;
+            text-align: center;
+        }
+
+        #temp {
+            display: flex;
+            flex-direction: column;
+            min-width: 80px;
+        }
+
+        #min,
+        #max {
+            font-size: 10px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        #city>h1 {
+            line-height: 64px;
+        }
+
+        #city {
+            margin-left: 10px;
+        }
+
+        #temp>h1 {
+            font-size: 48px;
+        }
+
+        #icon {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            flex-direction: column;
+        }
+
+        #icon>img {
+            width: 50px;
+            max-height: 50px;
+            padding: 5px;
+            display: inline-block;
+        }
+
+        #weather-additional {
+            background-color: #000;
+            opacity: 0.0;
+            color: #fff;
+            font-size: 12px;
+            padding: 5px;
+            text-align: center;
+            border-radius: 4px;
+            display: none;
+            animation: all 0.5s;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="weather-container">
+        <div id="table">
+            <div id="weather-main">
+                <div id="city">
+                    <h1>Київ</h1>
+                </div>
+                <div id="temp">
+                    <h1></h1>
+                </div>
+                <div id="icon">
+                    <img src="https://via.placeholder.com/50" alt="">
+                </div>
+            </div>
+            <div id="weather-additional">
+                <span id="add">
+                    Вологість: 90% <br />
+                    Швидкість вітру: 10 м/с<br />
+                    Тиск: 760 мм рт. ст.<br />
+                    Видимість: 1000 м<br />
+                </span>
+            </div>
+        </div>
+    </div>
+    <script>
+        const getWeather = () => {
+            const KEY = 'a59f8c595a7e6b1572e3cd0398b37a1d';
+            const URL = `https://api.openweathermap.org/data/2.5/weather?q=Kyiv&appid=${KEY}&units=metric&lang=ua`;
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', URL, true);
+            xhr.send();
+
+            setTimeout(function() {
+
+                try {
+                    let response = (JSON.parse(xhr.responseText));
+                    console.warn(`Info updated: ${(new Date()).toLocaleString()}`)
+                    document.querySelector('#icon > img').src = `http://openweathermap.org/img/w/${response.weather[0].icon}.png`;
+                    document.querySelector('#icon > img').title = `${response.weather[0].description}`;
+
+                    let temp = (response.main.temp).toFixed();
+                    if (temp == '-0') {
+                        temp = 0;
+                    };
+                    if (temp > 0) {
+                        temp = `+${temp}`;
+                    };
+                    document.querySelector('#temp > h1').innerText = `${temp}°`;
+                    document.querySelector('#add').innerText = `Вологість: ${response.main.humidity}%
+                    Швидкість вітру: ${response.wind.speed} м/с
+                    Тиск: ${(response.main.pressure * 0.750062).toFixed()} мм рт. ст.
+                    Видимість: ${response.visibility} м`
+
+                } catch (err) {
+                    console.error(`Error founded: ${err.message}`);
+                }
+            }, 300);
+        }
+
+        getWeather();
+
+        setInterval(getWeather, 30000);
+
+        const showAddWeather = () => {
+            document.querySelector('#weather-additional').style.display = "block";
+            document.querySelector('#weather-additional').style.opacity = "0.8";
+        }
+
+        const hideAddWeather = () => {
+            document.querySelector('#weather-additional').style.display = "none";
+            document.querySelector('#weather-additional').style.opacity = "0.0";
+        }
+
+        document.getElementById("weather-main").addEventListener('mouseover', showAddWeather);
+        document.getElementById("weather-main").addEventListener('mouseout', hideAddWeather);
+
+    </script>
+</body>
+
+</html>

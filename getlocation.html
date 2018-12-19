@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var IP;
+
+        var options = {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        };
+
+        function success(pos) {
+            var crd = pos.coords;
+
+            console.log('Your current position is:');
+            console.log(`Latitude: ${crd.latitude.toFixed(3)}`);
+            console.log(`Longitude: ${crd.longitude.toFixed(3)}`);
+            /////////////////запуск функции после определения координат
+            try {
+                foo(crd.latitude.toFixed(3), crd.longitude.toFixed(3))
+            } catch (err) {
+                console.log(err);
+            }
+            ///////////////////
+        };
+
+        function error(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+            /////////////////////request to get IP
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://api.ipify.org/', true)
+            xhr.send();
+            setTimeout(function() {
+                IP = xhr.responseText;
+                console.log(IP);
+                IPstack(IP);
+                return IP;
+            }, 1000);
+
+        };
+
+        navigator.geolocation.getCurrentPosition(success, error, options);
+
+        function IPstack(ip) {
+            let IP = ip;
+            let xhr2 = new XMLHttpRequest();
+            const IPSTACK_KEY = '4089f1c82ced7a19ba148ef450766426';
+            let URL = `http://api.ipstack.com/${IP}?access_key=${IPSTACK_KEY}`
+            xhr2.open('GET', URL, true);
+            xhr2.send()
+
+            setTimeout(function() {
+
+                let response = JSON.parse(xhr2.responseText);
+                console.log('Your current position is:');
+                console.log(`Latitude: ${response.latitude.toFixed(3)}`);
+                console.log(`Longitude: ${response.longitude.toFixed(3)}`);
+                try {
+                    foo(response.latitude.toFixed(3), response.longitude.toFixed(3));
+                } catch (err) {
+                    console.log(err)
+                };
+
+            }, 1000)
+        }
+
+        function foo(lat, lng) {
+            console.log(`This is output from other function foo() ${lat}, ${lng}`)
+        }
+
+    </script>
+</body>
+
+</html>

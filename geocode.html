@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Geocode API tests</title>
+    <link rel="stylesheet" href="geoweather.css">
+</head>
+
+<body>
+    <div id="container">
+        <div id="query">
+            <input type="text" id="address" placeholder="Input your address, city etc." />
+        </div>
+        <div id="weather">
+            <div id="weather-container">
+                <div id="table">
+                    <div id="weather-main">
+                        <div id="city">
+                            <span></span>
+                        </div>
+                        <div id="second">
+                            <div id="temp">
+                                <h1></h1>
+                            </div>
+                            <div id="icon">
+                                <img src="" alt="" width="50" height="50">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="weather-additional">
+                        <span id="add">
+                            Вологість: 90% <br />
+                            Швидкість вітру: 10 м/с<br />
+                            Тиск: 760 мм рт. ст.<br />
+                            Видимість: 1000 м<br />
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="btn"><button onclick="geoCode()">Update Weather</button></div>
+    </div>
+    <script src="geoweather.js" async defer></script>
+</body>
+
+</html>
