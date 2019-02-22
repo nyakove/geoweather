@@ -112,7 +112,6 @@
             display: none;
             animation: all 0.5s;
         }
-
     </style>
 </head>
 
@@ -141,58 +140,47 @@
         </div>
     </div>
     <script>
-        const getWeather = () => {
+        const getWeather = async () => {
             const KEY = 'a59f8c595a7e6b1572e3cd0398b37a1d';
-            const URL = `https://api.openweathermap.org/data/2.5/weather?q=Kyiv&appid=${KEY}&units=metric&lang=ua`;
+            const URL =
+                `https://api.openweathermap.org/data/2.5/weather?q=Kyiv&appid=${KEY}&units=metric&lang=ua`;
 
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET', URL, true);
-            xhr.send();
-
-            setTimeout(function() {
-
-                try {
-                    let response = (JSON.parse(xhr.responseText));
-                    console.warn(`Info updated: ${(new Date()).toLocaleString()}`)
-                    document.querySelector('#icon > img').src = `http://openweathermap.org/img/w/${response.weather[0].icon}.png`;
-                    document.querySelector('#icon > img').title = `${response.weather[0].description}`;
-
-                    let temp = (response.main.temp).toFixed();
-                    if (temp == '-0') {
-                        temp = 0;
-                    };
-                    if (temp > 0) {
-                        temp = `+${temp}`;
-                    };
-                    document.querySelector('#temp > h1').innerText = `${temp}°`;
-                    document.querySelector('#add').innerText = `Вологість: ${response.main.humidity}%
+            try {
+                let req = await fetch(URL);
+                let response = await req.json();
+                console.warn(`Info updated: ${(new Date()).toLocaleString()}`)
+                document.querySelector('#icon > img').src =
+                    `http://openweathermap.org/img/w/${response.weather[0].icon}.png`;
+                document.querySelector('#icon > img').title = `${response.weather[0].description}`;
+                let temp = (response.main.temp).toFixed();
+                if (temp == '-0') {
+                    temp = 0;
+                };
+                if (temp > 0) {
+                    temp = `+${temp}`;
+                };
+                document.querySelector('#temp > h1').innerText = `${temp}°`;
+                document.querySelector('#add').innerText =
+                    `Вологість: ${response.main.humidity}%
                     Швидкість вітру: ${response.wind.speed} м/с
                     Тиск: ${(response.main.pressure * 0.750062).toFixed()} мм рт. ст.
                     Видимість: ${response.visibility} м`
-
-                } catch (err) {
-                    console.error(`Error founded: ${err.message}`);
-                }
-            }, 300);
+            } catch (err) {
+                console.error(`Error founded: ${err.message}`);
+            }
         }
-
         getWeather();
-
         setInterval(getWeather, 30000);
-
         const showAddWeather = () => {
             document.querySelector('#weather-additional').style.display = "block";
             document.querySelector('#weather-additional').style.opacity = "0.8";
         }
-
         const hideAddWeather = () => {
             document.querySelector('#weather-additional').style.display = "none";
             document.querySelector('#weather-additional').style.opacity = "0.0";
         }
-
         document.getElementById("weather-main").addEventListener('mouseover', showAddWeather);
         document.getElementById("weather-main").addEventListener('mouseout', hideAddWeather);
-
     </script>
 </body>
 
